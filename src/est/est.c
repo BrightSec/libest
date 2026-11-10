@@ -1939,6 +1939,11 @@ EST_ERROR est_parse_uri (char *uri, EST_OPERATION *operation,
         }
         
         cur_seg = cur_seg->next;
+        if (cur_seg == NULL) {
+            EST_LOG_ERR("URI does not contain %s segment\n", EST_SEGMENT);
+            uriFreeUriMembersA(state.uri);
+            return (EST_ERR_HTTP_INVALID_PATH_SEGMENT);
+        }
         cur_seg_str = (char *)cur_seg->text.first;
         safec_rc = memcmp_s(cur_seg_str, EST_SEGMENT_LEN,
                             "est", EST_SEGMENT_LEN, &diff);
@@ -1954,6 +1959,11 @@ EST_ERROR est_parse_uri (char *uri, EST_OPERATION *operation,
          * or it's the operation 
          */
         cur_seg = cur_seg->next;
+        if (cur_seg == NULL) {
+            EST_LOG_ERR("URI does not contain an operation segment\n");
+            uriFreeUriMembersA(state.uri);
+            return (EST_ERR_HTTP_INVALID_PATH_SEGMENT);
+        }
         cur_seg_str = (char *)cur_seg->text.first;
 
         /*
